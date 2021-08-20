@@ -1,21 +1,21 @@
- #include "frame_buffer.h"
-#include "serial_port.h"
-#include "gdt.h"
-void init() {
- 
-  init_gdt();
+    #include "drivers/frame_buffer.h"
+    #include "drivers/serial_port.h"
+    #include "drivers/io.h"
+    #include "segmentation/segments.h"
+    #include "interrupts/interrupts.h"
+    #include "interrupts/keyboard.h"
+    #include "interrupts/pic.h"
+    
 
-  
-  serial_configure(SERIAL_COM1_BASE, Baud_115200);
-}
+    void kmain()
+    {
 
+       char arr[] = "Welcome to VGN_OS";
+       fb_move_cursor(6*80);
+       fb_write(arr, 18);
+       serial_write(arr, 18);
+       segments_install_gdt();
+       interrupts_install_idt();
 
-int kmain() {
-  init();
-  char buffer[20] = "Welcome to kmOS\n";
-  fb_write(buffer, 20);
-  serial_write(SERIAL_COM1_BASE, buffer, 20);
-  return 0;
-}
- 
- 
+    }
+

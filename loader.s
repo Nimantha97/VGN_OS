@@ -1,6 +1,11 @@
 global loader                   ; the entry symbol for ELF
 
 extern kmain 
+extern kernel_virtual_start
+extern kernel_virtual_end
+extern kernel_physical_start
+extern kernel_physical_end
+
 
 KERNEL_STACK_SIZE equ 4096      ; size of stack in bytes
 
@@ -28,7 +33,11 @@ loader:                         ; the loader label (defined as entry point in li
     
     add  esp, 4
     push ebx                    ; multiboot info in ebx 
-    call kmain
+push kernel_physical_end
+push kernel_physical_start
+push kernel_virtual_end
+push kernel_virtual_start
+call kmain
    
 .loop:
     jmp .loop                   ; loop forever
